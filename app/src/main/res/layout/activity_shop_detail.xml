@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true"
+	android:background="#FFF" >
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="@color/colorPrimary"
+		android:elevation="4dp"
+		android:theme="@style/ToolBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+	<ScrollView android:layout_below="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="60dp"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp">
+		<LinearLayout android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:animateLayoutChanges="true"
+			android:orientation="vertical">
+			<RelativeLayout android:id="@+id/thumbnail"
+				android:layout_width="wrap_content"
+				android:layout_height="250dp"
+				android:padding="2dp"
+				android:background="@drawable/image_bg_two">
+				<com.sobattani.Utils.LoopViewPager
+					android:id="@+id/pagerItemImages"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+				<com.viewpagerindicator.CirclePageIndicator
+					android:id="@+id/indicator"
+					android:layout_width="fill_parent"
+					android:layout_height="15dp"
+					android:layout_alignBottom="@+id/pagerItemImages"
+					android:layout_marginBottom="5dip"
+					android:padding="3dip"
+					app:radius="3dip"
+					app:fillColor="#000"
+					app:pageColor="#aaa"
+					app:strokeColor="#FFFFFF"
+					app:strokeWidth="2dp" />
+			</RelativeLayout>
+
+			<TextView android:id="@+id/txtItemName"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:maxLines="2"
+				android:textAllCaps="true"
+				android:paddingTop="10dp"
+				android:textColor="#000"
+				android:textSize="20sp"
+				android:gravity="center" />
+
+			<TextView android:id="@+id/txtHargaDiskon"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center|fill_horizontal"
+				android:singleLine="true"
+				android:textColor="#da251d"
+				android:textSize="20sp"
+				android:gravity="center" />
+
+			<TextView android:id="@+id/txtCategori"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:textColor="#1f4d6f"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+				android:textSize="15sp"
+				android:text="Kategori"
+				android:textAllCaps="true" />
+			<View android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#d3d3d3" />
+			<TextView android:id="@+id/txtCategoriDetail"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dp"
+				android:textColor="#5c5c5c"
+				android:textSize="14sp"
+				android:text="Tires" />
+
+			<TextView android:id="@+id/txtDeskripsi"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:textColor="#1f4d6f"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+				android:textSize="15sp"
+				android:text="Deskripsi"
+				android:textAllCaps="true" />
+			<View android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#d3d3d3" />
+			<TextView android:id="@+id/txtDeskripsiDetail"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dp"
+				android:textColor="#5c5c5c"
+				android:textSize="14sp"
+				android:text="Aahahffjafhf jafgahdbafhafb bahafgagfbfhf hgdvaafaflafbfl hvhvahvkadjsvj jvh ufhu" />
+
+			<TextView android:id="@+id/txtContact"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:textColor="#1f4d6f"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+				android:textSize="15sp"
+				android:text="Nomor Telepon"
+				android:textAllCaps="true" />
+			<View android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#d3d3d3" />
+			<TextView android:id="@+id/txtContactDetail"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dp"
+				android:textColor="#5c5c5c"
+				android:textSize="14sp"
+				android:text="" />
+
+			<TextView android:id="@+id/txtLokasi"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:textColor="#1f4d6f"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+				android:textSize="15sp"
+				android:text="Lokasi"
+				android:textAllCaps="true" />
+			<View android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#d3d3d3" />
+			<TextView android:id="@+id/txtLokasiDetail"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dp"
+				android:textColor="#5c5c5c"
+				android:textSize="14sp"
+				android:text="" />
+
+			<TextView android:id="@+id/txtNoRekening"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="15dp"
+				android:textColor="#1f4d6f"
+				android:paddingTop="2dp"
+				android:paddingBottom="2dp"
+				android:textSize="15sp"
+				android:text="Stock (Kg/Ltr/Unit)"
+				android:textAllCaps="true" />
+			<View android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="#d3d3d3" />
+			<TextView android:id="@+id/txtNoRekeningDetail"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dp"
+				android:textColor="#5c5c5c"
+				android:textSize="14sp"
+				android:text="" />
+		</LinearLayout>
+	</ScrollView>
+
+	<LinearLayout android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="2">
+		<LinearLayout android:id="@+id/linEdit"
+			android:layout_width="match_parent"
+			android:layout_height="45dp"
+			android:orientation="horizontal"
+			android:background="@drawable/custom_button_message"
+			android:clickable="true"
+			android:gravity="center"
+			android:onClick="btnEditClick"
+			android:layout_weight="1">
+			<ImageView android:layout_width="15dp"
+				android:layout_height="15dp"
+				android:src="@drawable/table_edit"
+				android:layout_centerVertical="true"
+				android:layout_marginRight="10dp"/>
+			<TextView android:id="@+id/txtEdit"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#fff"
+				android:textSize="14sp"
+				android:text="Edit" />
+		</LinearLayout>
+		<LinearLayout android:layout_width="match_parent"
+			android:layout_height="45dp"
+			android:orientation="horizontal"
+			android:background="@drawable/custom_button_call"
+			android:clickable="true"
+			android:gravity="center"
+			android:onClick="btnCallClick"
+			android:layout_weight="1">
+			<ImageView android:layout_width="15dp"
+				android:layout_height="15dp"
+				android:src="@drawable/phone_white"
+				android:layout_centerVertical="true"
+				android:layout_marginRight="10dp"/>
+			<TextView android:id="@+id/txtCall"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#fff"
+				android:textSize="14sp"
+				android:text="Call" />
+		</LinearLayout>
+	</LinearLayout>
+
+</RelativeLayout>

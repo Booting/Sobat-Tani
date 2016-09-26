@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SobatTani</string>
+    <string name="menu_data_sobat">Data Sobat</string>
+    <string name="menu_cari_sobat">Cari Sobat</string>
+    <string name="menu_tanya_sobat">Tanya Sobat</string>
+    <string name="menu_peta_sebaran_opt">Peta Sebaran OPT</string>
+    <string name="menu_informasi_cuaca">Informasi Cuaca</string>
+    <string name="menu_pasar_sobat">Pasar Sobat</string>
+    <string name="pasar_sobat_detail">Pasar Sobat Detail</string>
+    <string name="form_pasar_sobat">Form Pasar Sobat</string>
+    <string name="syarat_dan_ketentuan">Syarat &amp; Ketentuan</string>
+    <string name="profile">Profile</string>
+    <string name="you">You</string>
+    <string name="lihat_komentar_sobat"><u>Lihat Komentar Sobat</u></string>
+    <string name="nama_sobat">Nama Sobat / Nama Usaha Sobat</string>
+    <string name="alamat">Alamat</string>
+    <string name="status">Status</string>
+    <string name="no_telp">No Telp</string>
+    <string name="kategori_sobat">Kategori Sobat</string>
+    <string name="kategori_produk">Kategori Produk</string>
+    <string name="tanaman">Tanaman</string>
+    <string name="opt_saat_ini">OPT Saat Ini</string>
+    <string name="nama_perusahaan">Nama Perusahaan</string>
+    <string name="simpan">Simpan</string>
+
+    <!-- FACEBOOK APP ID
+         Key Hashes [DEV]  : NX406c6W/gTBPzb0eue8MWm9WHo=
+         Key Hashes [LIVE] : BShyTwRAnCfewvBE5167wTyfsDY=
+    -->
+    <string name="facebook_app_id">427650624096345</string>
+</resources>

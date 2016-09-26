@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/intro_sobattani"
+        android:scaleType="centerCrop"/>
+
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+        <TextView android:id="@+id/txtText1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#FFF"
+            android:textSize="17sp"
+            android:text="Welcome To"
+            android:gravity="center"
+            android:visibility="gone"/>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="5dip"
+            android:visibility="gone">
+            <TextView android:id="@+id/txtText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#DD003E"
+                android:textSize="22sp"
+                android:text="Five"/>
+            <TextView android:id="@+id/txtText3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF"
+                android:textSize="22sp"
+                android:text="Apps"
+                android:layout_marginLeft="6dip"/>
+        </LinearLayout>
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:textSize="15sp" />
+        <ProgressBar android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</RelativeLayout>

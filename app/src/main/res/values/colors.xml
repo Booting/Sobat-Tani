@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorSelected">#1f4d6f</color>
+    <color name="colorUnselected">#a24d4d4d</color>
+    <color name="colorBgSelected">#f2f2f2</color>
+    <color name="colorBgUnselected">#fff</color>
+
+    <color name="onesignal_bgimage_notif_title_color">#FFFF0000</color>
+    <color name="onesignal_bgimage_notif_body_color">#FF00FF00</color>
+</resources>

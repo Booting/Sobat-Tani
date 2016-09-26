@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_top"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:theme="@style/AppTheme" >
+        <TextView android:id="@+id/lblTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SOBAT TANI"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textColor="#FFF"/>
+    </android.support.v7.widget.Toolbar>
+
+    <com.etsy.android.grid.StaggeredGridView
+        android:id="@+id/itemList"
+        android:layout_below="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:smoothScrollbar="true"
+        android:scrollingCache="false"
+        android:animationCache="false"
+        app:column_count="2"
+        app:item_margin="10dp" />
+    <ProgressBar android:id="@+id/progressBusy"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_centerInParent="true" />
+</RelativeLayout>

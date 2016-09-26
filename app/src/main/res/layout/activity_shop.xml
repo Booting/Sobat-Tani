@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true"
+	android:background="#d9d9d9">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="@color/colorPrimary"
+		android:elevation="4dp"
+		android:theme="@style/ToolBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+	<com.etsy.android.grid.StaggeredGridView
+		android:id="@+id/itemList"
+		android:layout_below="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:animateLayoutChanges="true"
+		android:smoothScrollbar="true"
+		android:scrollingCache="false"
+		android:animationCache="false"
+		app:column_count="2"
+		app:item_margin="10dp"
+		android:visibility="gone" />
+
+	<ImageView android:id="@+id/btnSell"
+		android:layout_width="60dp"
+		android:layout_height="60dp"
+		android:padding="18dp"
+		android:src="@drawable/plus"
+		android:background="@drawable/custom_circle"
+		android:layout_gravity="right"
+		android:layout_margin="15dp"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:clickable="true"
+		android:visibility="gone"/>
+
+	<ProgressBar android:id="@+id/progressBar"
+		style="@style/ProgressBar" />
+
+</RelativeLayout>

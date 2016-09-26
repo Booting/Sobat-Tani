@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ToolBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ScrollView android:id="@+id/scrollView"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:paddingBottom="90dp">
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.sobattani.Utils.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imgProfile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="#1A000000"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    android:layout_margin="15dp"/>
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp">
+                    <TextView android:id="@+id/lblName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="#464747"/>
+                    <TextView android:id="@+id/lblEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#a6a6a6"/>
+                    <TextView android:id="@+id/lblView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorAccent"
+                        android:text="@string/lihat_komentar_sobat"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            // KUMPULAN FOTO SOBAT
+            <TextView android:id="@+id/lblUploadPhotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#464747"
+                android:text="KUMPULAN FOTO SOBAT"
+                android:layout_marginTop="15dp"/>
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:orientation="horizontal"
+                android:layout_weight="4"
+                android:layout_marginTop="5dp">
+                <ImageView android:id="@+id/imageOne"
+                    android:layout_marginRight="4dp"
+                    android:onClick="imageOneClick"
+                    style="@style/ProfileImageViewFotoSobat"/>
+                <ImageView android:id="@+id/imageTwo"
+                    android:layout_marginRight="4dp"
+                    android:onClick="imageTwoClick"
+                    style="@style/ProfileImageViewFotoSobat" />
+                <ImageView android:id="@+id/imageThree"
+                    android:layout_marginRight="4dp"
+                    android:onClick="imageThreeClick"
+                    style="@style/ProfileImageViewFotoSobat" />
+                <ImageView android:id="@+id/imageFour"
+                    android:onClick="imageFourClick"
+                    style="@style/ProfileImageViewFotoSobat" />
+            </LinearLayout>
+
+            // NAMA
+            <TextView android:id="@+id/lblUsername"
+                android:text="@string/nama_sobat"
+                android:layout_marginTop="20dp"
+                style="@style/ProfileTitle" />
+            <EditText android:id="@+id/editUsername"
+                style="@style/ProfileEditText" />
+
+            // STATUS
+            <TextView android:id="@+id/lblStatus"
+                android:text="@string/status"
+                android:layout_marginTop="20dp"
+                style="@style/ProfileTitle" />
+            <EditText android:id="@+id/editStatus"
+                android:layout_height="70dp"
+                android:gravity="top|left"
+                style="@style/ProfileEditText" />
+
+            // ALAMAT
+            <TextView android:id="@+id/lblAlamat"
+                android:text="@string/alamat"
+                android:layout_marginTop="20dp"
+                style="@style/ProfileTitle" />
+            <EditText android:id="@+id/editAlamat"
+                android:layout_height="70dp"
+                android:gravity="top|left"
+                style="@style/ProfileEditText" />
+
+            <LinearLayout style="@style/ProfileLinearLayout">
+                // NO TELP
+                <LinearLayout style="@style/ProfileLinearLayoutChild"
+                    android:layout_marginRight="8dp">
+                    <TextView android:id="@+id/lblNoTelp"
+                        android:text="@string/no_telp"
+                        style="@style/ProfileTitle" />
+                    <EditText android:id="@+id/editNoTelp"
+                        android:inputType="number"
+                        style="@style/ProfileEditText" />
+                </LinearLayout>
+
+                // KATEGORI SOBAT
+                <LinearLayout style="@style/ProfileLinearLayoutChild">
+                    <TextView android:id="@+id/lblKategori"
+                        android:text="@string/kategori_sobat"
+                        style="@style/ProfileTitle" />
+                    <RelativeLayout style="@style/ProfileRelativeLayout" >
+                        <Spinner android:id="@+id/spinKategori"
+                            style="@style/ProfileSpinner" />
+                        <ImageView style="@style/ProfileSpinnerImageView" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/linPetani"
+                style="@style/ProfileLinearLayout">
+                // TANAMAN
+                <LinearLayout style="@style/ProfileLinearLayoutChild"
+                    android:layout_marginRight="8dp">
+                    <TextView android:id="@+id/lblTanaman"
+                        android:text="@string/tanaman"
+                        style="@style/ProfileTitle" />
+                    <RelativeLayout android:id="@+id/relTanaman"
+                        style="@style/ProfileRelativeLayout">
+                        <Spinner android:id="@+id/spinTanaman"
+                            style="@style/ProfileSpinner" />
+                        <ImageView style="@style/ProfileSpinnerImageView" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                // OPT SAAT INI
+                <LinearLayout style="@style/ProfileLinearLayoutChild">
+                    <TextView android:id="@+id/lblHamaPenyakit"
+                        android:text="@string/opt_saat_ini"
+                        style="@style/ProfileTitle" />
+                    <RelativeLayout android:id="@+id/relhamaPenyakit"
+                        style="@style/ProfileRelativeLayout">
+                        <Spinner android:id="@+id/spinHamaPenyakit"
+                            style="@style/ProfileSpinner" />
+                        <ImageView style="@style/ProfileSpinnerImageView" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/linAgronomis"
+                style="@style/ProfileLinearLayout">
+                // NAMA PERUSAHAAN
+                <LinearLayout style="@style/ProfileLinearLayoutChild"
+                    android:layout_marginRight="8dp">
+                    <TextView android:id="@+id/lblNamaPerusahaan"
+                        android:text="@string/nama_perusahaan"
+                        style="@style/ProfileTitle" />
+                    <RelativeLayout android:id="@+id/relNamaPerusahaan"
+                        style="@style/ProfileRelativeLayout">
+                        <Spinner android:id="@+id/spinNamaPerusahaan"
+                            style="@style/ProfileSpinner" />
+                        <ImageView style="@style/ProfileSpinnerImageView" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                // KATEGORI PRODUK
+                <LinearLayout style="@style/ProfileLinearLayoutChild">
+                    <TextView android:id="@+id/lblKategoriProduk"
+                        android:text="@string/kategori_produk"
+                        style="@style/ProfileTitle" />
+                    <RelativeLayout android:id="@+id/relKategoriProduk"
+                        style="@style/ProfileRelativeLayout">
+                        <Spinner android:id="@+id/spinKategoriProduk"
+                            style="@style/ProfileSpinner" />
+                        <ImageView style="@style/ProfileSpinnerImageView" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout android:id="@+id/linSimpan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_weight="1">
+        <TextView android:id="@+id/txtSimpan"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:text="@string/simpan"
+            android:background="@drawable/custom_button_call"
+            android:clickable="true"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textAllCaps="true"/>
+    </LinearLayout>
+
+    <ProgressBar android:id="@+id/progressBusy"
+        android:visibility="gone"
+        style="@style/ProgressBar" />
+
+</RelativeLayout>

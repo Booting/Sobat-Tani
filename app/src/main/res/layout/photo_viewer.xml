@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF">
+    <com.sobattani.Utils.LoopViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/view_pager"
+        android:paddingBottom="20dip"
+        app:radius="5dip"
+        app:fillColor="#000"
+        app:pageColor="#aaa"
+        app:strokeColor="#00FFFFFF"
+        app:strokeWidth="0dp" />
+    <RelativeLayout android:id="@+id/relClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="#ffffff"
+        android:padding="10dp">
+        <ImageView android:id="@+id/imgClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/close" />
+    </RelativeLayout>
+</RelativeLayout>
+

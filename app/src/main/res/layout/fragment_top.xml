@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ToolBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <com.viewpagerindicator.UnderlinePageIndicator
+        android:id="@+id/underlinePageIndicator"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:background="#fff"
+        android:layout_height="4dp"/>
+    <LinearLayout android:id="@+id/linTrendingRank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/underlinePageIndicator"
+        android:weightSum="3">
+        <Button android:id="@+id/btnForum"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textColor="@color/colorSelected"
+            android:background="@color/colorBgSelected"
+            android:textSize="13sp"
+            android:textAllCaps="true"
+            android:text="Diskusi Sobat" />
+        <Button android:id="@+id/btnTrending"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textColor="@color/colorUnselected"
+            android:background="@color/colorBgUnselected"
+            android:textSize="13sp"
+            android:textAllCaps="true"
+            android:text="Teramai" />
+        <Button android:id="@+id/btnRank"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textColor="@color/colorUnselected"
+            android:background="@color/colorBgUnselected"
+            android:textSize="13sp"
+            android:textAllCaps="true"
+            android:text="Teraktif" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linTrendingRank"
+        android:background="#f1f1f1">
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>

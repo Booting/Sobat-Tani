@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:animateLayoutChanges="true"
+	android:background="#f2f2f2">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="@color/colorPrimary"
+		android:elevation="4dp"
+		android:theme="@style/ToolBar"
+		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+	<ScrollView android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:layout_marginTop="15dp"
+		android:layout_marginLeft="15dp"
+		android:layout_marginRight="15dp"
+		android:layout_marginBottom="50dp">
+		<LinearLayout android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:animateLayoutChanges="true"
+			android:orientation="vertical">
+
+			<LinearLayout android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="15dp"
+				android:paddingBottom="10dp"
+				android:orientation="vertical"
+				android:layout_marginTop="10dp">
+				<TextView android:id="@+id/lblTellUs"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#1f4d6f"
+					android:textSize="15sp"
+					android:text="KATEGORI PERTANYAAN" />
+				<RelativeLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="15dp" >
+					<Spinner android:id="@+id/spinCategori"
+						android:layout_width="fill_parent"
+						android:layout_height="40dp"
+						android:background="@drawable/custom_edittext"
+						android:padding="10dp"
+						android:singleLine="true"
+						android:textColor="#000"
+						android:textCursorDrawable="@null"
+						android:textSize="13sp"
+						android:visibility="gone" />
+					<TextView android:id="@+id/txtCategori"
+						android:layout_width="fill_parent"
+						android:layout_height="40dp"
+						android:background="@drawable/custom_edittext"
+						android:padding="10dp"
+						android:singleLine="true"
+						android:text="Pilih Topik"
+						android:textColor="#5c5c5c"
+						android:textCursorDrawable="@null"
+						android:textSize="13sp"
+						android:layout_centerVertical="true" />
+					<ImageView android:layout_width="17dp"
+						android:layout_height="8dp"
+						android:layout_alignParentRight="true"
+						android:layout_centerVertical="true"
+						android:background="@drawable/arrow_down"
+						android:layout_marginRight="10dp"/>
+				</RelativeLayout>
+				<EditText android:id="@+id/txtDescription"
+					android:layout_width="match_parent"
+					android:layout_height="100dp"
+					android:textColor="#5c5c5c"
+					android:textSize="13sp"
+					android:hint="Tulis pertanyaan Anda..."
+					android:gravity="top|left"
+					android:layout_marginTop="15dp"
+					android:padding="10dp"
+					android:background="@drawable/custom_edittext" />
+			</LinearLayout>
+
+			<LinearLayout android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:orientation="vertical">
+				<TextView android:id="@+id/lblUpload"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#1f4d6f"
+					android:textSize="15sp"
+					android:text="TAMBAH GAMBAR" />
+				<LinearLayout android:layout_width="match_parent"
+					android:layout_height="70dp"
+					android:orientation="horizontal"
+					android:layout_weight="4"
+					android:layout_marginTop="10dp">
+					<ImageView android:id="@+id/imageOne"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:background="@drawable/placeholder"
+						android:layout_marginRight="4dp"
+						android:scaleType="centerCrop"
+						android:onClick="imageOneClick" />
+					<ImageView android:id="@+id/imageTwo"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:background="@drawable/placeholder"
+						android:layout_marginRight="4dp"
+						android:scaleType="centerCrop"
+						android:onClick="imageTwoClick"
+						android:visibility="invisible" />
+					<ImageView android:id="@+id/imageThree"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:background="@drawable/placeholder"
+						android:layout_marginRight="4dp"
+						android:scaleType="centerCrop"
+						android:onClick="imageThreeClick"
+						android:visibility="invisible" />
+					<ImageView android:id="@+id/imageFour"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:background="@drawable/placeholder"
+						android:scaleType="centerCrop"
+						android:onClick="imageFourClick"
+						android:visibility="invisible" />
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+
+	<LinearLayout android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"
+		android:layout_weight="2">
+		<TextView android:id="@+id/txtCancel"
+			android:layout_width="match_parent"
+			android:layout_height="45dp"
+			android:textColor="#fff"
+			android:textSize="14sp"
+			android:text="Batal"
+			android:background="@drawable/custom_button_message"
+			android:clickable="true"
+			android:gravity="center"
+			android:onClick="btnCancelClick"
+			android:layout_weight="1"
+			android:textAllCaps="true"/>
+		<TextView android:id="@+id/txtSubmit"
+			android:layout_width="match_parent"
+			android:layout_height="45dp"
+			android:textColor="#fff"
+			android:textSize="14sp"
+			android:text="Kirim"
+			android:background="@drawable/custom_button_call"
+			android:clickable="true"
+			android:gravity="center"
+			android:onClick="btnSubmitClick"
+			android:layout_weight="1"
+			android:textAllCaps="true" />
+	</LinearLayout>
+
+</RelativeLayout>
