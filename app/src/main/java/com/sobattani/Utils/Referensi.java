@@ -1,6 +1,5 @@
 package com.sobattani.Utils;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,8 +8,10 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class Referensi {
-    public static String url       = "http://dirgareksa.xyz/ws-sobattani";
-    public static String PREF_NAME = "sobattani";
+    public static String url                           = "http://dirgareksa.xyz/ws-sobattani";
+    public static String URL_CLOUDINARY                = "http://res.cloudinary.com/sobattani/image/upload/";
+    public static String URL_CLOUDINARY_TRANSFORMATION = "http://res.cloudinary.com/sobattani/image/upload/w_250,h_250,c_fill/";
+    public static String PREF_NAME                     = "sobattani";
 
     public static String getDate(long timeStamp) {
         try {

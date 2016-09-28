@@ -1,9 +1,7 @@
 package com.sobattani;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -21,17 +19,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,30 +40,27 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import com.sobattani.Utils.CircleImageView;
 import com.sobattani.Utils.FontCache;
 import com.sobattani.Utils.Referensi;
 import com.sobattani.Utils.TypeFaceSpan;
 import com.sobattani.Utils.callURL;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private SharedPreferences sobatTaniPref;
@@ -81,13 +75,10 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     private Spinner spinKategori, spinTanaman, spinHamaPenyakit, spinNamaPerusahaan, spinKategoriProduk;
     private RequestQueue queue;
     private ArrayList<Kategori> userCategoriList, tanamanList, hamaPenyakitList, namaPerusahaanList, kategoriProdukList;
-    private RelativeLayout relTanaman, relhamaPenyakit, relNamaPerusahaan, relKategoriProduk;
-    private ProgressDialog pDialog;
     private JSONArray str_login  = null;
     private ImageView imageOne, imageTwo, imageThree, imageFour;
     private String imagepathOne=null, imagepathTwo=null, imagepathThree=null, imagepathFour=null;
     private String pathOne="", pathTwo="", pathThree="", pathFour="";
-    private HttpEntity resEntity;
     private int countImage=0;
     private String oldPictures="";
     private String[] splitPic;
@@ -95,6 +86,9 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     private int mMaxHeight = 480;
     private Toolbar toolbar;
     private LinearLayout linPetani, linAgronomis;
+    private Cloudinary cloudinary;
+    private ArrayList<File> arrayListFile = new ArrayList<>();
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +100,12 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
+        Map config = new HashMap();
+        config.put("cloud_name", "sobattani");
+        config.put("api_key", "513198426757233");
+        config.put("api_secret", "0tDv2knaPbNuIQu7ZfWswxB7RF0");
+        cloudinary = new Cloudinary(config);
 
         initToolbar();
 
@@ -137,10 +137,6 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         spinHamaPenyakit   = (Spinner) findViewById(R.id.spinHamaPenyakit);
         spinNamaPerusahaan = (Spinner) findViewById(R.id.spinNamaPerusahaan);
         spinKategoriProduk = (Spinner) findViewById(R.id.spinKategoriProduk);
-        relTanaman         = (RelativeLayout) findViewById(R.id.relTanaman);
-        relhamaPenyakit    = (RelativeLayout) findViewById(R.id.relhamaPenyakit);
-        relNamaPerusahaan  = (RelativeLayout) findViewById(R.id.relNamaPerusahaan);
-        relKategoriProduk  = (RelativeLayout) findViewById(R.id.relKategoriProduk);
         txtSimpan          = (TextView) findViewById(R.id.txtSimpan);
         imageOne	       = (ImageView) findViewById(R.id.imageOne);
         imageTwo	       = (ImageView) findViewById(R.id.imageTwo);
@@ -181,10 +177,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                 .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(300, 300)
                 .dontAnimate().into(imgProfile);
 
-        pDialog = new ProgressDialog(ProfileActivity.this);
-        pDialog.setMessage("Working...");
-        pDialog.setCancelable(false);
-
+        showDialog();
         getUserCategoriSpinner();
 
         txtSimpan.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +201,10 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                     if (countImage==0) {
                         new updateUserDetail().execute();
                     } else {
-                        new UploadImage().execute();
+                        try { dialog.show(); } catch (Exception e) {}
+                        for (int i=0; i<arrayListFile.size(); i++) {
+                            new Upload(cloudinary, arrayListFile.get(i), i).execute();
+                        }
                     }
                 }
             }
@@ -243,8 +239,6 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     }
 
     public void getUserCategoriSpinner() {
-        pDialog.show();
-
         String url = Referensi.url+"/getUserCategori.php";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -536,19 +530,19 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                         if (!oldPictures.equalsIgnoreCase("") || !oldPictures.isEmpty()) {
                             for (int j=0; j<splitPic.length; j++) {
                                 if (j==0) {
-                                    Glide.with(ProfileActivity.this).load(Referensi.url+"/pictures/"+splitPic[j])
+                                    Glide.with(ProfileActivity.this).load(Referensi.URL_CLOUDINARY_TRANSFORMATION + splitPic[j])
                                             .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(300, 300).dontAnimate().into(imageOne);
                                 } else if (j==1) {
-                                    Glide.with(ProfileActivity.this).load(Referensi.url+"/pictures/"+splitPic[j])
+                                    Glide.with(ProfileActivity.this).load(Referensi.URL_CLOUDINARY_TRANSFORMATION + splitPic[j])
                                             .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(300, 300).dontAnimate().into(imageTwo);
                                 } else if (j==2) {
-                                    Glide.with(ProfileActivity.this).load(Referensi.url+"/pictures/"+splitPic[j])
+                                    Glide.with(ProfileActivity.this).load(Referensi.URL_CLOUDINARY_TRANSFORMATION + splitPic[j])
                                             .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(300, 300).dontAnimate().into(imageThree);
                                 } else {
-                                    Glide.with(ProfileActivity.this).load(Referensi.url+"/pictures/"+splitPic[j])
+                                    Glide.with(ProfileActivity.this).load(Referensi.URL_CLOUDINARY_TRANSFORMATION + splitPic[j])
                                             .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .override(300, 300).dontAnimate().into(imageFour);
                                 }
@@ -558,12 +552,12 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                pDialog.dismiss();
+                try { dialog.dismiss(); } catch (Exception e) {}
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                pDialog.dismiss();
+                try { dialog.dismiss(); } catch (Exception e) {}
                 Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -632,11 +626,8 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                 break;
         }
     }
-
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     private class updateUserDetail extends AsyncTask<String, Void, String> {
         @Override
@@ -697,15 +688,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                             "&HamaDanPenyakit="+idHamaPenyakit+
                             "&Pictures="+oldPictures+
                             "&UserId=" + UserId;
-                } /*else if (userCategori.equalsIgnoreCase("Toko Pertanian")) {
-                    url = Referensi.url + "/service.php?ct=UPDATEUSERTOKOPERTANIAN" +
-                            "&UserType="+idUserCategori+
-                            "&Alamat="+mAlamat+
-                            "&NoTelp="+mNoTelp+
-                            "&KategoriProduk="+idKategoriProduk +
-                            "&Pictures="+oldPictures+
-                            "&UserId=" + UserId;
-                }*/ else if (userCategori.equalsIgnoreCase("Agronomis")) {
+                } else if (userCategori.equalsIgnoreCase("Agronomis")) {
                     url = Referensi.url + "/service.php?ct=UPDATEUSERAGRONOMIS" +
                             "&UserType="+idUserCategori+
                             "&Nama="+mNama+
@@ -736,53 +719,11 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            pDialog.dismiss();
+            try { dialog.dismiss(); } catch (Exception e) {}
             if (result.equalsIgnoreCase("true")) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProfileActivity.this);
-                alertDialog.setTitle("Success");
-                alertDialog.setMessage("Update data succesfully!");
-                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int which) {
-                        setResult(Activity.RESULT_OK);
-                        dialog.cancel();
-                        SharedPreferences.Editor editor = sobatTaniPref.edit();
-                        editor.putString("isAMember", "true");
-                        editor.commit();
-                    }
-                });
-                if (!isFinishing()) { alertDialog.show(); }
+                Toast.makeText(ProfileActivity.this, "Update data succesfully!", Toast.LENGTH_LONG).show();
             } else {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProfileActivity.this);
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage("Update data error! Please try again or close apps and open again.");
-                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int which) {
-                        dialog.cancel();
-                    }
-                });
-                if (!isFinishing()) { alertDialog.show(); }
-            }
-        }
-    }
-
-    private class UploadImage extends AsyncTask<HttpEntity, Void, HttpEntity> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog.show();
-        }
-        @Override
-        protected HttpEntity doInBackground(HttpEntity... params) {
-            return doFileUpload();
-        }
-        @Override
-        protected void onPostExecute(HttpEntity result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                countImage=0;
-                new updateUserDetail().execute();
-            } else {
-                countImage=0;
+                Toast.makeText(ProfileActivity.this, "Update data error! Please try again or close apps and open again.", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -830,19 +771,39 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
                         if (requestCode==1) {
+                            // Get image path
                             imagepathOne = getPath(selectedImageUri);
-                            Bitmap bitmap=BitmapFactory.decodeFile(imagepathOne, options);
+                            pathOne      = new File(imagepathOne).getName();
+                            addFileToArrayList(imagepathOne, 0);
+
+                            // Set image to image view
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagepathOne, options);
                             imageOne.setImageBitmap(bitmap);
                         } else if (requestCode==2) {
+                            // Get image path
                             imagepathTwo = getPath(selectedImageUri);
-                            Bitmap bitmap=BitmapFactory.decodeFile(imagepathTwo, options);
+                            pathTwo      = new File(imagepathTwo).getName();
+                            addFileToArrayList(imagepathTwo, 1);
+
+                            // Set image to image view
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagepathTwo, options);
                             imageTwo.setImageBitmap(bitmap);
                         } else if (requestCode==3) {
+                            // Get image path
                             imagepathThree = getPath(selectedImageUri);
+                            pathThree      = new File(imagepathThree).getName();
+                            addFileToArrayList(imagepathThree, 2);
+
+                            // Set image to image view
                             Bitmap bitmap=BitmapFactory.decodeFile(imagepathThree, options);
                             imageThree.setImageBitmap(bitmap);
                         } else if (requestCode==4) {
+                            // Get image path
                             imagepathFour = getPath(selectedImageUri);
+                            pathFour      = new File(imagepathFour).getName();
+                            addFileToArrayList(imagepathFour, 3);
+
+                            // Set image to image view
                             Bitmap bitmap=BitmapFactory.decodeFile(imagepathFour, options);
                             imageFour.setImageBitmap(bitmap);
                         }
@@ -881,214 +842,124 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
             Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
         } else {
             if (requestCode==1) {
+                // Get image path
                 imagepathOne = getPath(selectedImageUri);
+                pathOne      = new File(imagepathOne).getName();
+                addFileToArrayList(imagepathOne, 0);
+
+                // Set image to image view
                 imageOne.setImageBitmap(bitmap);
             } else if (requestCode==2) {
+                // Get image path
                 imagepathTwo = getPath(selectedImageUri);
+                pathTwo      = new File(imagepathTwo).getName();
+                addFileToArrayList(imagepathTwo, 1);
+
+                // Set image to image view
                 imageTwo.setImageBitmap(bitmap);
             } else if (requestCode==3) {
+                // Get image path
                 imagepathThree = getPath(selectedImageUri);
+                pathThree      = new File(imagepathThree).getName();
+                addFileToArrayList(imagepathThree, 2);
+
+                // Set image to image view
                 imageThree.setImageBitmap(bitmap);
             } else if (requestCode==4) {
+                // Get image path
                 imagepathFour = getPath(selectedImageUri);
+                pathFour      = new File(imagepathFour).getName();
+                addFileToArrayList(imagepathFour, 3);
+
+                // Set image to image view
                 imageFour.setImageBitmap(bitmap);
             }
         }
     }
 
-    private HttpEntity doFileUpload() {
-        try {
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = null;
-            File file1 = null, file2, file3, file4;
-            FileBody bin1 = null, bin2, bin3, bin4;
+    private class Upload extends AsyncTask<String, Void, String> {
+        private Cloudinary mCloudinary;
+        private File mFile;
+        private int mPosition;
 
-            MultipartEntity reqEntity = new MultipartEntity();
-            if (countImage==1) {
-                post = new HttpPost(Referensi.url+"/UploadOne.php");
-                if (imagepathOne!=null) {
-                    file1     = new File(imagepathOne);
-                    pathOne   = file1.getName();
-                } else if (imagepathTwo!=null) {
-                    file1     = new File(imagepathTwo);
-                    pathTwo   = file1.getName();
-                } else if (imagepathThree!=null) {
-                    file1     = new File(imagepathThree);
-                    pathThree = file1.getName();
-                } else {
-                    file1     = new File(imagepathFour);
-                    pathFour  = file1.getName();
+        public Upload(Cloudinary cloudinary, File file, int position) {
+            super();
+            mCloudinary = cloudinary;
+            mFile       = file;
+            mPosition   = position;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            JSONObject result = null;
+            try {
+                result = new JSONObject(mCloudinary.uploader().upload(mFile, ObjectUtils.asMap("transformation",
+                        new Transformation().width(500).height(500).crop("limit"))));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return result.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String strResult) {
+            try {
+                JSONObject jsonObject = new JSONObject(strResult);
+                String strFileName    = jsonObject.getString("url").substring(jsonObject.getString("url").lastIndexOf('/') + 1);
+                String strOriginal    = jsonObject.getString("original_filename") + "." + jsonObject.getString("format");
+
+                if (pathOne.equalsIgnoreCase(strOriginal)) {
+                    pathOne = strFileName;
                 }
-
-                bin1 = new FileBody(file1);
-                reqEntity.addPart("uploadedfile1", bin1);
-            } else if (countImage==2) {
-                post = new HttpPost(Referensi.url+"/UploadTwo.php");
-
-                if (imagepathOne!=null) {
-                    file1     = new File(imagepathOne);
-                    pathOne   = file1.getName();
-                } else if (imagepathTwo!=null) {
-                    file1     = new File(imagepathTwo);
-                    pathTwo   = file1.getName();
-                } else if (imagepathThree!=null) {
-                    file1     = new File(imagepathThree);
-                    pathThree = file1.getName();
-                } else {
-                    file1     = new File(imagepathFour);
-                    pathFour  = file1.getName();
+                if (pathTwo.equalsIgnoreCase(strOriginal)) {
+                    pathTwo = strFileName;
                 }
-
-                if (imagepathTwo!=null) {
-                    file2     = new File(imagepathTwo);
-                    pathTwo   = file2.getName();
-                } else if (imagepathThree!=null) {
-                    file2     = new File(imagepathThree);
-                    pathThree = file2.getName();
-                } else if (imagepathFour!=null) {
-                    file2     = new File(imagepathFour);
-                    pathFour  = file2.getName();
-                } else {
-                    file2     = new File(imagepathOne);
-                    pathOne   = file2.getName();
+                if (pathThree.equalsIgnoreCase(strOriginal)) {
+                    pathThree = strFileName;
                 }
-
-                bin1 = new FileBody(file1);
-                bin2 = new FileBody(file2);
-                reqEntity.addPart("uploadedfile1", bin1);
-                reqEntity.addPart("uploadedfile2", bin2);
-            } else if (countImage==3) {
-                post = new HttpPost(Referensi.url+"/UploadThree.php");
-
-                if (imagepathOne!=null) {
-                    file1	   = new File(imagepathOne);
-                    pathOne   = file1.getName();
-                } else if (imagepathTwo!=null) {
-                    file1 	   = new File(imagepathTwo);
-                    pathTwo   = file1.getName();
-                } else if (imagepathThree!=null) {
-                    file1 	   = new File(imagepathThree);
-                    pathThree = file1.getName();
-                } else {
-                    file1 	   = new File(imagepathFour);
-                    pathFour  = file1.getName();
+                if (pathFour.equalsIgnoreCase(strOriginal)) {
+                    pathFour = strFileName;
                 }
-
-                if (imagepathTwo!=null) {
-                    file2     = new File(imagepathTwo);
-                    pathTwo   = file2.getName();
-                } else if (imagepathThree!=null) {
-                    file2     = new File(imagepathThree);
-                    pathThree = file2.getName();
-                } else if (imagepathFour!=null) {
-                    file2     = new File(imagepathFour);
-                    pathFour  = file2.getName();
-                } else {
-                    file2     = new File(imagepathOne);
-                    pathOne   = file2.getName();
-                }
-
-                if (imagepathThree!=null) {
-                    file3 	   = new File(imagepathThree);
-                    pathThree = file3.getName();
-                } else if (imagepathFour!=null) {
-                    file3     = new File(imagepathFour);
-                    pathFour  = file3.getName();
-                } else if (imagepathOne!=null) {
-                    file3 	   = new File(imagepathOne);
-                    pathOne   = file3.getName();
-                } else {
-                    file3 	   = new File(imagepathTwo);
-                    pathTwo   = file3.getName();
-                }
-
-                bin1 = new FileBody(file1);
-                bin2 = new FileBody(file2);
-                bin3 = new FileBody(file3);
-                reqEntity.addPart("uploadedfile1", bin1);
-                reqEntity.addPart("uploadedfile2", bin2);
-                reqEntity.addPart("uploadedfile3", bin3);
-            } else if (countImage==4) {
-                post = new HttpPost(Referensi.url+"/UploadFour.php");
-
-                if (imagepathOne!=null) {
-                    file1 	   = new File(imagepathOne);
-                    pathOne   = file1.getName();
-                } else if (imagepathTwo!=null) {
-                    file1 	   = new File(imagepathTwo);
-                    pathTwo   = file1.getName();
-                } else if (imagepathThree!=null) {
-                    file1 	   = new File(imagepathThree);
-                    pathThree = file1.getName();
-                } else {
-                    file1 	   = new File(imagepathFour);
-                    pathFour  = file1.getName();
-                }
-
-                if (imagepathTwo!=null) {
-                    file2 	   = new File(imagepathTwo);
-                    pathTwo   = file2.getName();
-                } else if (imagepathThree!=null) {
-                    file2 	   = new File(imagepathThree);
-                    pathThree = file2.getName();
-                } else if (imagepathFour!=null) {
-                    file2 	   = new File(imagepathFour);
-                    pathFour  = file2.getName();
-                } else {
-                    file2 = new File(imagepathOne);
-                    pathOne   = file2.getName();
-                }
-
-                if (imagepathThree!=null) {
-                    file3     = new File(imagepathThree);
-                    pathThree = file3.getName();
-                } else if (imagepathFour!=null) {
-                    file3     = new File(imagepathFour);
-                    pathFour  = file3.getName();
-                } else if (imagepathOne!=null) {
-                    file3     = new File(imagepathOne);
-                    pathOne   = file3.getName();
-                } else {
-                    file3 	   = new File(imagepathTwo);
-                    pathTwo   = file3.getName();
-                }
-
-                if (imagepathFour!=null) {
-                    file4     = new File(imagepathFour);
-                    pathFour  = file4.getName();
-                } else if (imagepathOne!=null) {
-                    file4     = new File(imagepathOne);
-                    pathOne   = file4.getName();
-                } else if (imagepathTwo!=null) {
-                    file4     = new File(imagepathTwo);
-                    pathTwo   = file4.getName();
-                } else {
-                    file4     = new File(imagepathThree);
-                    pathThree = file4.getName();
-                }
-
-                bin1 = new FileBody(file1);
-                bin2 = new FileBody(file2);
-                bin3 = new FileBody(file3);
-                bin4 = new FileBody(file4);
-                reqEntity.addPart("uploadedfile1", bin1);
-                reqEntity.addPart("uploadedfile2", bin2);
-                reqEntity.addPart("uploadedfile3", bin3);
-                reqEntity.addPart("uploadedfile4", bin4);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-            reqEntity.addPart("user", new StringBody("User"));
-            post.setEntity(reqEntity);
-
-            HttpResponse response = client.execute(post);
-            resEntity = response.getEntity();
-            @SuppressWarnings("unused")
-            final String response_str = EntityUtils.toString(resEntity);
-        } catch (Exception ex) {
-            countImage=0;
-            Log.e("Debug", "error: " + ex.getMessage(), ex);
+            if (mPosition==(arrayListFile.size()-1)) {
+                countImage=0;
+                new updateUserDetail().execute();
+            }
         }
-        return resEntity;
+    }
+
+    public void addFileToArrayList(String strPath, int intPosition) {
+        if (arrayListFile.size()==0) {
+            arrayListFile.add(new File(strPath));
+        } else {
+            try {
+                if (arrayListFile.get(intPosition) != null) {
+                    arrayListFile.add(new File(strPath));
+                } else {
+                    arrayListFile.set(intPosition, new File(strPath));
+                }
+            } catch (IndexOutOfBoundsException e) {
+                arrayListFile.add(new File(strPath));
+            }
+        }
+    }
+
+    private void showDialog() {
+        dialog = new Dialog(ProfileActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.setCancelable(false);
+
+        TextView lblTitle = (TextView) dialog.findViewById(R.id.lblTitle);
+        lblTitle.setTypeface(fontDroidSand);
+
+        try {
+            dialog.show();
+        } catch (Exception e) {}
     }
 
     @Override
