@@ -24,7 +24,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageSwitcher;
@@ -70,13 +71,13 @@ public class ShowProfileActivity extends AppCompatActivity {
     private RequestQueue queue;
     private JSONArray str_login  = null;
     private LinearLayout linList;
-	private ProgressDialog pDialog;
 	private String url="", UserId, WhoCommentId, LikeId, strGcmId;
     private SharedPreferences sobatTaniPref;
     private ImageSwitcher imgLike;
     private RelativeLayout relLike;
     private boolean isAvailable=false;
     private Toolbar toolbar;
+    private Dialog dialog;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -169,11 +170,7 @@ public class ShowProfileActivity extends AppCompatActivity {
 			}
 		});
 
-        pDialog = new ProgressDialog(ShowProfileActivity.this);
-        pDialog.setMessage("Working...");
-        pDialog.setCancelable(false);
-        pDialog.show();
-
+        showDialog();
         getUserDetail();
         getUserLike();
 	}
@@ -230,12 +227,12 @@ public class ShowProfileActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                pDialog.dismiss();
+                try { dialog.dismiss(); } catch (Exception e) {}
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                pDialog.dismiss();
+                try { dialog.dismiss(); } catch (Exception e) {}
                 Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -353,7 +350,6 @@ public class ShowProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-        	pDialog.dismiss();
             if (result.equalsIgnoreCase("true")) {
             	txtWriteComment.setText("");
             	Toast.makeText(getApplicationContext(), "Post comment succesfully!", Toast.LENGTH_SHORT).show();
@@ -376,10 +372,7 @@ public class ShowProfileActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(ShowProfileActivity.this);
-            pDialog.setMessage("Working...");
-            pDialog.setCancelable(false);
-            pDialog.show();
+            try { dialog.show(); } catch (Exception e) {}
         }
         @Override
         protected String doInBackground(String... params) {
@@ -400,7 +393,7 @@ public class ShowProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-        	pDialog.dismiss();
+            try { dialog.dismiss(); } catch (Exception e) {}
             if (result.equalsIgnoreCase("true")) {
             	if (diLike.equalsIgnoreCase("1")) {
             		Toast.makeText(getApplicationContext(), "Like succesfully!", Toast.LENGTH_SHORT).show();
@@ -487,7 +480,7 @@ public class ShowProfileActivity extends AppCompatActivity {
                         .centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(500, 500)
                         .dontAnimate().into(imageView);
             } else {
-                Glide.with(ShowProfileActivity.this).load(Referensi.url+"/pictures/"+jsonProductImages.optString(position)).placeholder(R.drawable.img_loader)
+                Glide.with(ShowProfileActivity.this).load(Referensi.URL_CLOUDINARY + jsonProductImages.optString(position)).placeholder(R.drawable.img_loader)
                         .centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(500, 500)
                         .dontAnimate().into(imageView);
             }
@@ -511,6 +504,20 @@ public class ShowProfileActivity extends AppCompatActivity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             ((ViewPager) container).removeView((ImageView) object);
         }
+    }
+
+    private void showDialog() {
+        dialog = new Dialog(ShowProfileActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog);
+        dialog.setCancelable(false);
+
+        TextView lblTitle = (TextView) dialog.findViewById(R.id.lblTitle);
+        lblTitle.setTypeface(fontUbuntuL);
+
+        try {
+            dialog.show();
+        } catch (Exception e) {}
     }
 
 	@Override

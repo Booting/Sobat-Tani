@@ -16,12 +16,19 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ProfileImageViewFotoSobat">
+    <style name="ProfileLinearLayoutFotoSobat">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/placeholder</item>
+        <item name="android:background">@drawable/image_bg_two</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="ProfileImageViewFotoSobat">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/icon_addphoto</item>
     </style>
 
     <style name="ProfileTitle">

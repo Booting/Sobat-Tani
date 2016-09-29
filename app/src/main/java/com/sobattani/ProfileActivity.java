@@ -894,7 +894,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
             JSONObject result = null;
             try {
                 result = new JSONObject(mCloudinary.uploader().upload(mFile, ObjectUtils.asMap("transformation",
-                        new Transformation().width(500).height(500).crop("limit"))));
+                        new Transformation().width(850).height(850).crop("limit"))));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

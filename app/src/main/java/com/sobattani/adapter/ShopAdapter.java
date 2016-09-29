@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.sobattani.R;
 import com.sobattani.ShopDetailActivity;
+import com.sobattani.ShowProfileActivity;
+import com.sobattani.Utils.CircleImageView;
 import com.sobattani.Utils.FontCache;
 import com.sobattani.Utils.Referensi;
 import org.json.JSONArray;
@@ -124,18 +126,20 @@ public class ShopAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.shop_cell, parent, false);
             vh = new ViewHolder();
 
-            vh.relItem		  = (LinearLayout) convertView.findViewById(R.id.relItem);
-            vh.imgItem        = (DynamicHeightImageView) convertView.findViewById(R.id.imgItem);
-            vh.txtItemName    = (TextView) convertView.findViewById(R.id.txtItemName);
-            vh.txtSeller      = (TextView) convertView.findViewById(R.id.txtSeller);
+            vh.relItem = (LinearLayout) convertView.findViewById(R.id.relItem);
+            vh.imgItem = (DynamicHeightImageView) convertView.findViewById(R.id.imgItem);
+            vh.txtItemName = (TextView) convertView.findViewById(R.id.txtItemName);
+            vh.txtSeller = (TextView) convertView.findViewById(R.id.txtSeller);
             vh.txtHargaDiskon = (TextView) convertView.findViewById(R.id.txtHargaDiskon);
-            vh.txtDeskripsi   = (TextView) convertView.findViewById(R.id.txtDeskripsi);
-            vh.txtLocation    = (TextView) convertView.findViewById(R.id.txtLocation);
-            vh.txtKategori    = (TextView) convertView.findViewById(R.id.txtKategori);
-            vh.txtContact	  = (TextView) convertView.findViewById(R.id.txtContact);
-            vh.txtNoRekening  = (TextView) convertView.findViewById(R.id.txtNoRekening);
-            vh.txtSellerId    = (TextView) convertView.findViewById(R.id.txtSellerId);
-            vh.txtItemId      = (TextView) convertView.findViewById(R.id.txtItemId);
+            vh.txtDeskripsi = (TextView) convertView.findViewById(R.id.txtDeskripsi);
+            vh.txtLocation = (TextView) convertView.findViewById(R.id.txtLocation);
+            vh.txtKategori = (TextView) convertView.findViewById(R.id.txtKategori);
+            vh.txtContact = (TextView) convertView.findViewById(R.id.txtContact);
+            vh.txtNoRekening = (TextView) convertView.findViewById(R.id.txtNoRekening);
+            vh.txtSellerId = (TextView) convertView.findViewById(R.id.txtSellerId);
+            vh.txtItemId = (TextView) convertView.findViewById(R.id.txtItemId);
+            vh.profileImage = (CircleImageView) convertView.findViewById(R.id.profileImage);
+            vh.linInfo = (LinearLayout) convertView.findViewById(R.id.linInfo);
 
             vh.txtItemName.setTypeface(fontUbuntuB);
             vh.txtSeller.setTypeface(fontUbuntuL);
@@ -148,16 +152,26 @@ public class ShopAdapter extends BaseAdapter {
 
         double positionHeight = getPositionRatio(position);
         vh.imgItem.setHeightRatio(positionHeight);
-        
+
         JSONArray jArray = null;
         try {
             jArray = new JSONArray(arrayPicture.get(position));
-	        Glide.with(_context).load(Referensi.url + "/pictures/" + jArray.get(0).toString())
+            Glide.with(_context).load(Referensi.URL_CLOUDINARY_TRANSFORMATION + jArray.get(0).toString())
                     .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(300, 300)
                     .dontAnimate().into(vh.imgItem);
-		} catch (JSONException e) { e.printStackTrace(); }
-        
-        vh.txtHargaDiskon.setText("Rp "+Referensi.currencyFormater(Double.parseDouble(arrayHargaAsli.get(position))).replace(",", "."));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(_context).load("https://graph.facebook.com/" + arraySellerId.get(position) + "/picture?type=normal")
+                .placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(100, 100)
+                .dontAnimate().into(vh.profileImage);
+
+        if (arrayHargaAsli.get(position).contains(",")) {
+            vh.txtHargaDiskon.setText("Rp " + arrayHargaAsli.get(position));
+        } else {
+            vh.txtHargaDiskon.setText("Rp " + Referensi.currencyFormater(Double.parseDouble(arrayHargaAsli.get(position))));
+        }
         vh.txtItemName.setText(arrayItemName.get(position));
         vh.txtSeller.setText(arrayUserName.get(position));
         vh.txtDeskripsi.setText(arrayDeskripsi.get(position));
@@ -186,6 +200,15 @@ public class ShopAdapter extends BaseAdapter {
 						putExtra("ItemDeskripsi", vh.txtDeskripsi.getText().toString()), 1);
 			}
 		});
+
+        vh.linInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(_context, ShowProfileActivity.class);
+                intent.putExtra("UserId", arraySellerId.get(position));
+                _context.startActivity(intent);
+            }
+        });
         
         return convertView;
     }
@@ -203,6 +226,8 @@ public class ShopAdapter extends BaseAdapter {
         TextView txtNoRekening;
         TextView txtSellerId;
         TextView txtItemId;
+        CircleImageView profileImage;
+        LinearLayout linInfo;
     }
 
     private double getPositionRatio(final int position) {

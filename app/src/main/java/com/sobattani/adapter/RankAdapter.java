@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sobattani.R;
+import com.sobattani.ShowProfileActivity;
 import com.sobattani.Utils.FontCache;
 import com.sobattani.Utils.ImageLoader;
 import org.json.JSONArray;
@@ -185,6 +186,15 @@ public class RankAdapter extends BaseAdapter {
                         Toast.makeText(activity, "no whatsapp!", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+
+        vh.imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(_context, ShowProfileActivity.class);
+                intent.putExtra("UserId", arrayUserId.get(position));
+                _context.startActivity(intent);
             }
         });
 

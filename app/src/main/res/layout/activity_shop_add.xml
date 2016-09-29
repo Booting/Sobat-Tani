@@ -22,14 +22,14 @@
 		android:layout_marginTop="15dp"
 		android:layout_marginLeft="15dp"
 		android:layout_marginRight="15dp"
-		android:layout_marginBottom="50dp">
+		android:layout_marginBottom="60dp">
 		<LinearLayout android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:animateLayoutChanges="true"
 			android:orientation="vertical">
 			<LinearLayout android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="10dp"
+				android:layout_marginTop="0dp"
 				android:orientation="vertical">
 				<TextView android:id="@+id/lblUpload"
 					android:layout_width="wrap_content"
@@ -38,41 +38,33 @@
 					android:textSize="15sp"
 					android:text="GAMBAR PRODUK" />
 				<LinearLayout android:layout_width="match_parent"
-					android:layout_height="70dp"
+					android:layout_height="80dp"
 					android:orientation="horizontal"
 					android:layout_weight="4"
 					android:layout_marginTop="10dp">
-					<ImageView android:id="@+id/imageOne"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:layout_weight="1"
-						android:background="@drawable/placeholder"
-						android:layout_marginRight="4dp"
-						android:onClick="imageOneClick"
-						android:scaleType="centerCrop"/>
-					<ImageView android:id="@+id/imageTwo"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:layout_weight="1"
-						android:background="@drawable/placeholder"
-						android:layout_marginRight="4dp"
-						android:onClick="imageTwoClick"
-						android:scaleType="centerCrop" />
-					<ImageView android:id="@+id/imageThree"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:layout_weight="1"
-						android:background="@drawable/placeholder"
-						android:layout_marginRight="4dp"
-						android:onClick="imageThreeClick"
-						android:scaleType="centerCrop" />
-					<ImageView android:id="@+id/imageFour"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:layout_weight="1"
-						android:background="@drawable/placeholder"
-						android:onClick="imageFourClick"
-						android:scaleType="centerCrop" />
+					<LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+						android:layout_marginRight="4dp">
+						<ImageView android:id="@+id/imageOne"
+							android:onClick="imageOneClick"
+							style="@style/ProfileImageViewFotoSobat" />
+					</LinearLayout>
+					<LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+						android:layout_marginRight="4dp">
+						<ImageView android:id="@+id/imageTwo"
+							android:onClick="imageTwoClick"
+							style="@style/ProfileImageViewFotoSobat" />
+					</LinearLayout>
+					<LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+						android:layout_marginRight="4dp">
+						<ImageView android:id="@+id/imageThree"
+							android:onClick="imageThreeClick"
+							style="@style/ProfileImageViewFotoSobat" />
+					</LinearLayout>
+					<LinearLayout style="@style/ProfileLinearLayoutFotoSobat">
+						<ImageView android:id="@+id/imageFour"
+							android:onClick="imageFourClick"
+							style="@style/ProfileImageViewFotoSobat" />
+					</LinearLayout>
 				</LinearLayout>
 			</LinearLayout>
 
@@ -87,112 +79,96 @@
 					android:layout_height="wrap_content"
 					android:textColor="#1f4d6f"
 					android:textSize="15sp"
-					android:text="DESKRIPSI PRODUK" />
+					android:text="DESKRIPSI PRODUK"
+					android:visibility="gone"/>
+
+				// NAMA BARANG
+				<TextView android:id="@+id/lblNamaBarang"
+					android:text="@string/nama_barang"
+					android:layout_marginTop="5dp"
+					style="@style/ProfileTitle" />
 				<EditText android:id="@+id/txtItemName"
-					android:layout_width="match_parent"
-					android:layout_height="40dp"
-					android:textColor="#5c5c5c"
-					android:textSize="13sp"
-					android:hint="Nama Barang"
-					android:layout_marginTop="10dp"
 					android:singleLine="true"
-					android:padding="10dp"
-					android:background="@drawable/custom_edittext" />
-				<RelativeLayout android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginTop="15dp" >
-					<Spinner android:id="@+id/spinCategori"
-						android:layout_width="fill_parent"
-						android:layout_height="40dp"
-						android:background="@drawable/custom_edittext"
-						android:padding="10dp"
-						android:singleLine="true"
-						android:textColor="#000"
-						android:textCursorDrawable="@null"
-						android:textSize="13sp"
-						android:visibility="gone" />
-					<TextView android:id="@+id/txtCategori"
-						android:layout_width="fill_parent"
-						android:layout_height="40dp"
-						android:background="@drawable/custom_edittext"
-						android:padding="10dp"
-						android:singleLine="true"
-						android:text="Pilih Kategori"
-						android:textColor="#5c5c5c"
-						android:textCursorDrawable="@null"
-						android:textSize="13sp"
-						android:layout_centerVertical="true" />
-					<ImageView android:layout_width="17dp"
-						android:layout_height="8dp"
-						android:layout_alignParentRight="true"
-						android:layout_centerVertical="true"
-						android:background="@drawable/arrow_down"
-						android:layout_marginRight="10dp"/>
-				</RelativeLayout>
+					style="@style/ProfileEditText" />
+
+				<LinearLayout style="@style/ProfileLinearLayout">
+					// KATEGORI PRODUK
+					<LinearLayout style="@style/ProfileLinearLayoutChild"
+						android:layout_marginRight="8dp">
+						<TextView android:id="@+id/lblKategori"
+							android:text="@string/kategori_produk"
+							style="@style/ProfileTitle" />
+						<RelativeLayout android:id="@+id/relKategoriProduk"
+							style="@style/ProfileRelativeLayout">
+							<Spinner android:id="@+id/spinCategori"
+								android:paddingLeft="10dp"
+								style="@style/ProfileSpinner" />
+							<TextView android:id="@+id/txtCategori"
+								android:singleLine="true"
+								android:text="Pilih Kategori"
+								android:textCursorDrawable="@null"
+								android:layout_marginTop="0dp"
+								style="@style/ProfileEditText" />
+							<ImageView style="@style/ProfileSpinnerImageView" />
+						</RelativeLayout>
+					</LinearLayout>
+
+					// HARGA
+					<LinearLayout style="@style/ProfileLinearLayoutChild">
+						<TextView android:id="@+id/lblOriginalPrice"
+							android:text="@string/harga"
+							style="@style/ProfileTitle" />
+						<EditText android:id="@+id/txtOriginalPrice"
+							android:singleLine="true"
+							android:inputType="number"
+							style="@style/ProfileEditText" />
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout style="@style/ProfileLinearLayout">
+					// NO TELP
+					<LinearLayout style="@style/ProfileLinearLayoutChild"
+						android:layout_marginRight="8dp">
+						<TextView android:id="@+id/lblNoTelp"
+							android:text="@string/no_telp"
+							style="@style/ProfileTitle" />
+						<EditText android:id="@+id/txtContactNumber"
+							android:inputType="number"
+							style="@style/ProfileEditText" />
+					</LinearLayout>
+
+					// STOCK
+					<LinearLayout style="@style/ProfileLinearLayoutChild">
+						<TextView android:id="@+id/lblStock"
+							android:text="@string/jumlah_barang"
+							style="@style/ProfileTitle" />
+						<EditText android:id="@+id/txtStock"
+							android:inputType="number"
+							style="@style/ProfileEditText" />
+					</LinearLayout>
+				</LinearLayout>
+
+				// DESKRIPSI
+				<TextView android:id="@+id/lblDeskripsi"
+					android:text="@string/deskripsi"
+					android:layout_marginTop="20dp"
+					style="@style/ProfileTitle" />
 				<EditText android:id="@+id/txtDescription"
-					android:layout_width="match_parent"
 					android:layout_height="70dp"
-					android:textColor="#5c5c5c"
-					android:textSize="13sp"
 					android:hint="Deskripsi mengenai apa yang Anda jual..."
 					android:gravity="top|left"
-					android:layout_marginTop="15dp"
-					android:padding="10dp"
-					android:background="@drawable/custom_edittext" />
-				<LinearLayout android:layout_width="match_parent"
-					android:layout_height="40dp"
-					android:orientation="horizontal"
-					android:layout_marginTop="15dp">
-					<TextView android:id="@+id/lblOriginalPrice"
-						android:layout_width="80dp"
-						android:layout_height="40dp"
-						android:textColor="#000"
-						android:textSize="13sp"
-						android:text="HARGA"
-						android:gravity="center_vertical"/>
-					<EditText android:id="@+id/txtOriginalPrice"
-						android:layout_width="match_parent"
-						android:layout_height="40dp"
-						android:textColor="#5c5c5c"
-						android:textSize="13sp"
-						android:hint="Rp"
-						android:inputType="number"
-						android:singleLine="true"
-						android:padding="10dp"
-						android:layout_marginLeft="10dp"
-						android:background="@drawable/custom_edittext" />
-				</LinearLayout>
-				<EditText android:id="@+id/txtContactNumber"
-					android:layout_width="match_parent"
-					android:layout_height="40dp"
-					android:textColor="#5c5c5c"
-					android:textSize="13sp"
-					android:hint="Nomor Telepon"
-					android:inputType="number"
-					android:singleLine="true"
-					android:padding="10dp"
-					android:layout_marginTop="15dp"
-					android:background="@drawable/custom_edittext" />
-				<EditText android:id="@+id/txtStock"
-					android:layout_width="match_parent"
-					android:layout_height="40dp"
-					android:textColor="#5c5c5c"
-					android:textSize="13sp"
-					android:hint="Jumlah Barang"
-					android:inputType="number"
-					android:layout_marginTop="15dp"
-					android:padding="10dp"
-					android:background="@drawable/custom_edittext" />
+					style="@style/ProfileEditText" />
+
+				// ALAMAT
+				<TextView android:id="@+id/lblAlamat"
+					android:text="@string/alamat"
+					android:layout_marginTop="20dp"
+					style="@style/ProfileTitle" />
 				<EditText android:id="@+id/txtAddress"
-					android:layout_width="match_parent"
 					android:layout_height="70dp"
-					android:textColor="#5c5c5c"
-					android:textSize="13sp"
-					android:hint="Alamat..."
 					android:gravity="top|left"
-					android:layout_marginTop="15dp"
-					android:padding="10dp"
-					android:background="@drawable/custom_edittext" />
+					style="@style/ProfileEditText" />
+
 			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>

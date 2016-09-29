@@ -23,6 +23,10 @@
     <string name="nama_perusahaan">Nama Perusahaan</string>
     <string name="simpan">Simpan</string>
     <string name="silahkan_tunggu_sobat">Silahkan tunggu sobat...</string>
+    <string name="nama_barang">Nama Barang</string>
+    <string name="harga">Harga (IDR)</string>
+    <string name="deskripsi">Deskripsi</string>
+    <string name="jumlah_barang">Jumlah Barang</string>
 
     <!-- FACEBOOK APP ID
          Key Hashes [DEV]  : NX406c6W/gTBPzb0eue8MWm9WHo=

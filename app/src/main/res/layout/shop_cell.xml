@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
     android:background="@android:color/white"
-    android:padding="5dp">
+    android:padding="0.5dp">
 
-    <LinearLayout android:id="@+id/thumbnail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="2dp"
-        android:background="@drawable/image_bg_two">
-	    <com.etsy.android.grid.util.DynamicHeightImageView
-	    	android:id="@+id/imgItem"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="@android:color/white"
-	        android:scaleType="centerCrop"/>
-    </LinearLayout>
+	<com.etsy.android.grid.util.DynamicHeightImageView
+		android:id="@+id/imgItem"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/white"
+		android:scaleType="centerCrop"/>
     
     <TextView android:id="@+id/txtItemName"
         android:layout_width="match_parent"
@@ -27,11 +22,13 @@
         android:maxLines="2"
         android:textAllCaps="true"
         android:background="@android:color/white"
-        android:paddingLeft="0dp"
         android:paddingTop="5dp"
-        android:paddingRight="0dp"
+		android:paddingLeft="8dp"
+		android:paddingRight="8dp"
         android:textColor="#141516"
         android:textSize="15sp"
+		android:ellipsize="end"
+		android:gravity="center"
         android:text="TEST" />
 
 	<TextView android:id="@+id/txtHargaDiskon"
@@ -40,28 +37,37 @@
 		android:layout_gravity="center|fill_horizontal"
 		android:background="@android:color/white"
 		android:singleLine="true"
-		android:paddingLeft="0dp"
-		android:paddingRight="0dp"
+		android:paddingLeft="8dp"
+		android:paddingRight="8dp"
 		android:textColor="#da251d"
 		android:textSize="15sp"
+		android:gravity="center"
 		android:text="Rp 30.000.0000" />
 
+	<View android:background="#f2f2f2"
+		android:layout_width="match_parent"
+		android:layout_height="0.5dp"
+		android:layout_marginTop="8dp" />
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linInfo"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
         android:padding="8dp"
-        android:background="#f2f2f2">
+        android:background="#0000">
         <LinearLayout android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal"
-	        android:layout_weight="1">
-	        <ImageView android:layout_width="15dp"
-	            android:layout_height="15dp"
-	            android:src="@drawable/account"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="4dp" />
+	        android:layout_weight="1"
+			android:gravity="center">
+			<com.sobattani.Utils.CircleImageView
+				android:id="@+id/profileImage"
+				android:layout_width="25dp"
+				android:layout_height="25dp"
+				android:scaleType="centerCrop"
+				app:civ_border_width="1dp"
+				app:civ_border_color="#1A000000"
+				android:layout_centerVertical="true"
+				android:layout_marginRight="4dp"/>
 	        <TextView android:id="@+id/txtSeller"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"

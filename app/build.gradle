@@ -10,8 +10,8 @@ android {
         applicationId "com.sobattani"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.6"
+        versionCode 7
+        versionName "1.7"
         multiDexEnabled true
         manifestPlaceholders = [manifestApplicationId: "${applicationId}",
                                 onesignal_app_id: "26e2e53a-f079-44ba-87ca-aa032788c2f5",

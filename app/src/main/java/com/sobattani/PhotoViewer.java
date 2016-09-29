@@ -88,7 +88,7 @@ public class PhotoViewer extends Activity {
                         .centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate().into(imageView);
             } else {
-                Glide.with(PhotoViewer.this).load(Referensi.url+"/pictures/"+jsonImages.optString(position)).placeholder(R.drawable.img_loader)
+                Glide.with(PhotoViewer.this).load(Referensi.URL_CLOUDINARY + jsonImages.optString(position)).placeholder(R.drawable.img_loader)
                         .centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate().into(imageView);
             }

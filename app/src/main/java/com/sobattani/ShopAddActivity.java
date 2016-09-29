@@ -2,11 +2,9 @@ package com.sobattani;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -23,13 +21,15 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -45,19 +45,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import com.sobattani.Utils.FontCache;
 import com.sobattani.Utils.Referensi;
 import com.sobattani.Utils.TypeFaceSpan;
 import com.sobattani.Utils.callURL;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,25 +66,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class ShopAddActivity extends AppCompatActivity {
 	private Typeface fontUbuntuL, fontUbuntuB;
-    private TextView lblUpload, lblTellUs, lblOriginalPrice, txtCategori, txtCancel, txtSubmit;
+    private TextView lblUpload, lblTellUs, lblOriginalPrice, txtCategori, txtCancel, txtSubmit,
+			lblNamaBarang, lblKategori, lblDeskripsi, lblAlamat, lblNoTelp, lblStock;
 	private EditText txtItemName, txtDescription, txtOriginalPrice, txtContactNumber, txtStock, txtAddress;
     private Spinner spinCategori;
     private ArrayList<Kategori> categoriList;
 	private int categoriId;
     private String UserId="", ItemId="", UserType="";
-    private ProgressDialog pDialog;
 	private String url = "";
 	private ImageView imageOne, imageTwo, imageThree, imageFour;
 	private String imagepathOne=null, imagepathTwo=null, imagepathThree=null, imagepathFour=null;
     private JSONArray jsonArray = new JSONArray();
     @SuppressWarnings("unused")
 	private long totalSize = 0;
-    private HttpEntity resEntity;
     private int countImage=0;
     private int mMaxWidth  = 480;
     private int mMaxHeight = 480;
@@ -98,6 +93,9 @@ public class ShopAddActivity extends AppCompatActivity {
 	private SharedPreferences sobatTaniPref;
 	private JSONArray jArrImages = null;
 	private Toolbar toolbar;
+	private Cloudinary cloudinary;
+	private ArrayList<File> arrayListFile = new ArrayList<>();
+	private Dialog dialog;
     
 	@SuppressLint("NewApi")
 	@Override
@@ -110,6 +108,12 @@ public class ShopAddActivity extends AppCompatActivity {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
+
+		Map config = new HashMap();
+		config.put("cloud_name", "sobattani");
+		config.put("api_key", "513198426757233");
+		config.put("api_secret", "0tDv2knaPbNuIQu7ZfWswxB7RF0");
+		cloudinary = new Cloudinary(config);
 
 		initToolbar();
 
@@ -136,24 +140,33 @@ public class ShopAddActivity extends AppCompatActivity {
 		imageFour     		 = (ImageView) findViewById(R.id.imageFour);
 		UserId       		 = sobatTaniPref.getString("UserId", "");
 		UserType			 = sobatTaniPref.getString("UserType", "");
+		lblNamaBarang		 = (TextView) findViewById(R.id.lblNamaBarang);
+		lblKategori			 = (TextView) findViewById(R.id.lblKategori);
+		lblDeskripsi		 = (TextView) findViewById(R.id.lblDeskripsi);
+		lblAlamat			 = (TextView) findViewById(R.id.lblAlamat);
+		lblNoTelp			 = (TextView) findViewById(R.id.lblNoTelp);
+		lblStock			 = (TextView) findViewById(R.id.lblStock);
 
 		txtCancel.setTypeface(fontUbuntuB); 
 		txtSubmit.setTypeface(fontUbuntuB);
 		lblUpload.setTypeface(fontUbuntuB);
 		lblTellUs.setTypeface(fontUbuntuB);
 		txtCategori.setTypeface(fontUbuntuL);
-		lblOriginalPrice.setTypeface(fontUbuntuL);
+		lblOriginalPrice.setTypeface(fontUbuntuB);
 		txtItemName.setTypeface(fontUbuntuL);
 		txtDescription.setTypeface(fontUbuntuL);
 		txtOriginalPrice.setTypeface(fontUbuntuL);
 		txtContactNumber.setTypeface(fontUbuntuL);
 		txtStock.setTypeface(fontUbuntuL);
 		txtAddress.setTypeface(fontUbuntuL);
-		
-		pDialog = new ProgressDialog(ShopAddActivity.this);
-        pDialog.setMessage("Working...");
-        pDialog.setCancelable(false);
+		lblNamaBarang.setTypeface(fontUbuntuB);
+		lblKategori.setTypeface(fontUbuntuB);
+		lblDeskripsi.setTypeface(fontUbuntuB);
+		lblAlamat.setTypeface(fontUbuntuB);
+		lblNoTelp.setTypeface(fontUbuntuB);
+		lblStock.setTypeface(fontUbuntuB);
 
+		showDialog();
 		txtCategori.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -162,6 +175,7 @@ public class ShopAddActivity extends AppCompatActivity {
 				spinCategori.performClick();
 			}
 		});
+		txtOriginalPrice.addTextChangedListener(new CurrencyTextWatcher());
 		
 		getCategoriSpinner();
 
@@ -187,6 +201,25 @@ public class ShopAddActivity extends AppCompatActivity {
 			}
 		}
     }
+
+	class CurrencyTextWatcher implements TextWatcher {
+		boolean mEditing;
+		public CurrencyTextWatcher() {
+			mEditing = false;
+		}
+		public synchronized void afterTextChanged(Editable s) {
+			if(!mEditing) {
+				mEditing = true;
+				if (s.length()!=0) {
+					txtOriginalPrice.setText(Referensi.currencyFormater(Double.parseDouble(s.toString().replace(",", ""))));
+					txtOriginalPrice.setSelection(txtOriginalPrice.getText().length());
+				}
+				mEditing = false;
+			}
+		}
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+		public void onTextChanged(CharSequence s, int start, int before, int count) {}
+	}
 
 	private void initToolbar() {
 		SpannableString spanToolbar = new SpannableString(getString(R.string.form_pasar_sobat));
@@ -215,7 +248,7 @@ public class ShopAddActivity extends AppCompatActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pDialog.show();
+			try { dialog.show(); } catch (Exception e) {}
 		}
 		@Override
 		protected String doInBackground(String... params) {
@@ -225,7 +258,7 @@ public class ShopAddActivity extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			pDialog.dismiss();
+			try { dialog.dismiss(); } catch (Exception e) {}
 		}
 	}
 
@@ -259,10 +292,12 @@ public class ShopAddActivity extends AppCompatActivity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				try { dialog.dismiss(); } catch (Exception e) {}
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				try { dialog.dismiss(); } catch (Exception e) {}
 				Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -346,37 +381,18 @@ public class ShopAddActivity extends AppCompatActivity {
 			} if (imagepathFour!=null) {
 				countImage = countImage+1;
 			}
-			new UploadImage().execute();
+
+			try { dialog.show(); } catch (Exception e) {}
+			for (int i=0; i<arrayListFile.size(); i++) {
+				new Upload(cloudinary, arrayListFile.get(i), i).execute();
+			}
 		}
 	}
-	
-	private class UploadImage extends AsyncTask<HttpEntity, Void, HttpEntity> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog.show();
-        }
-        @Override
-        protected HttpEntity doInBackground(HttpEntity... params) {
-        	return doFileUpload();
-        }
-        @Override
-        protected void onPostExecute(HttpEntity result) {
-            super.onPostExecute(result);
-            if (result != null) {
-           	 	countImage=0;
-                new addNewItem().execute();
-            } else {
-           	 	countImage=0;
-            }
-        }
-    }
-	
+
 	private class addNewItem extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog.show();
         }
         @Override
         protected String doInBackground(String... params) {
@@ -419,30 +435,14 @@ public class ShopAddActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            pDialog.dismiss();
-            if (result.equalsIgnoreCase("true")) {
-            	AlertDialog.Builder alertDialog = new AlertDialog.Builder(ShopAddActivity.this);
-                alertDialog.setTitle("Success");
-                alertDialog.setMessage("Add new item succesfully!");
-                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int which) {
-                    	dialog.cancel();
-                    	setResult(RESULT_OK);
-                    	finish();
-                    }
-                });
-                if (!isFinishing()) { alertDialog.show(); }
-            } else {
-            	AlertDialog.Builder alertDialog = new AlertDialog.Builder(ShopAddActivity.this);
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage("Add new item error! Please try again or close apps and open again.");
-                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int which) {
-                    	dialog.cancel();
-                    }
-                });
-                if (!isFinishing()) { alertDialog.show(); }
-            }
+			try { dialog.dismiss(); } catch (Exception e) {}
+			if (result.equalsIgnoreCase("true")) {
+				Toast.makeText(ShopAddActivity.this, "Add new item succesfully!", Toast.LENGTH_LONG).show();
+				setResult(RESULT_OK);
+				finish();
+			} else {
+				Toast.makeText(ShopAddActivity.this, "Add new item error! Please try again or close apps and open again.", Toast.LENGTH_LONG).show();
+			}
         }
     }
 	
@@ -489,19 +489,35 @@ public class ShopAddActivity extends AppCompatActivity {
     		            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
     		            
     		            if (requestCode==1) {
+							// Get image path
 	    		            imagepathOne = getPath(selectedImageUri);
+							addFileToArrayList(imagepathOne, 0);
+
+							// Set image to image view
 	    		            Bitmap bitmap=BitmapFactory.decodeFile(imagepathOne, options);
 	    		            imageOne.setImageBitmap(bitmap);
     		            } else if (requestCode==2) {
+							// Get image path
     		            	imagepathTwo = getPath(selectedImageUri);
+							addFileToArrayList(imagepathTwo, 1);
+
+							// Set image to image view
 	    		            Bitmap bitmap=BitmapFactory.decodeFile(imagepathTwo, options);
 	    		            imageTwo.setImageBitmap(bitmap);
     		            } else if (requestCode==3) {
+							// Get image path
     		            	imagepathThree = getPath(selectedImageUri);
+							addFileToArrayList(imagepathThree, 2);
+
+							// Set image to image view
 	    		            Bitmap bitmap=BitmapFactory.decodeFile(imagepathThree, options);
 	    		            imageThree.setImageBitmap(bitmap);
     		            } else if (requestCode==4) {
+							// Get image path
     		            	imagepathFour = getPath(selectedImageUri);
+							addFileToArrayList(imagepathFour, 2);
+
+							// Set image to image view
 	    		            Bitmap bitmap=BitmapFactory.decodeFile(imagepathFour, options);
 	    		            imageFour.setImageBitmap(bitmap);
     		            }
@@ -538,92 +554,108 @@ public class ShopAddActivity extends AppCompatActivity {
         	Toast.makeText(ShopAddActivity.this, "Error", Toast.LENGTH_LONG).show();
         } else {
         	if (requestCode==1) {
+				// Get image path
 		        imagepathOne = getPath(selectedImageUri);
+				addFileToArrayList(imagepathOne, 0);
+
+				// Set image to image view
         		imageOne.setImageBitmap(bitmap);
         	} else if (requestCode==2) {
+				// Get image path
 		        imagepathTwo = getPath(selectedImageUri);
+				addFileToArrayList(imagepathTwo, 1);
+
+				// Set image to image view
         		imageTwo.setImageBitmap(bitmap);
         	} else if (requestCode==3) {
+				// Get image path
 		        imagepathThree = getPath(selectedImageUri);
+				addFileToArrayList(imagepathThree, 2);
+
+				// Set image to image view
         		imageThree.setImageBitmap(bitmap);
         	} else if (requestCode==4) {
+				// Get image path
 		        imagepathFour = getPath(selectedImageUri);
+				addFileToArrayList(imagepathFour, 3);
+
+				// Set image to image view
         		imageFour.setImageBitmap(bitmap);
         	}
         }
     }
-    
-	private HttpEntity doFileUpload() {
-    	try {
-             HttpClient client = new DefaultHttpClient();
-             HttpPost post = null;
-             File file1, file2, file3, file4;
-             FileBody bin1, bin2, bin3, bin4;
-             
-             MultipartEntity reqEntity = new MultipartEntity();
-             if (countImage==1) {
-            	 post  = new HttpPost(Referensi.url+"/UploadOne.php");
-            	 file1 = new File(imagepathOne);
-            	 bin1  = new FileBody(file1);
-            	 jsonArray.put(file1.getName());
-            	 reqEntity.addPart("uploadedfile1", bin1);
-             } else if (countImage==2) {
-            	 post  = new HttpPost(Referensi.url+"/UploadTwo.php");
-            	 file1 = new File(imagepathOne);
-            	 file2 = new File(imagepathTwo);
-            	 bin1  = new FileBody(file1);
-            	 bin2  = new FileBody(file2);
-            	 jsonArray.put(file1.getName());
-            	 jsonArray.put(file2.getName());
-            	 reqEntity.addPart("uploadedfile1", bin1);
-            	 reqEntity.addPart("uploadedfile2", bin2);
-             } else if (countImage==3) {
-            	 post  = new HttpPost(Referensi.url+"/UploadThree.php");
-            	 file1 = new File(imagepathOne);
-            	 file2 = new File(imagepathTwo);
-            	 file3 = new File(imagepathThree);
-            	 bin1  = new FileBody(file1);
-            	 bin2  = new FileBody(file2);
-            	 bin3  = new FileBody(file3);
-            	 jsonArray.put(file1.getName());
-            	 jsonArray.put(file2.getName());
-            	 jsonArray.put(file3.getName());
-            	 reqEntity.addPart("uploadedfile1", bin1);
-            	 reqEntity.addPart("uploadedfile2", bin2);
-            	 reqEntity.addPart("uploadedfile3", bin3);
-             } else if (countImage==4) {
-            	 post  = new HttpPost(Referensi.url+"/UploadFour.php");
-            	 file1 = new File(imagepathOne);
-            	 file2 = new File(imagepathTwo);
-            	 file3 = new File(imagepathThree);
-            	 file4 = new File(imagepathFour);
-            	 bin1  = new FileBody(file1);
-            	 bin2  = new FileBody(file2);
-            	 bin3  = new FileBody(file3);
-            	 bin4  = new FileBody(file4);
-            	 jsonArray.put(file1.getName());
-            	 jsonArray.put(file2.getName());
-            	 jsonArray.put(file3.getName());
-            	 jsonArray.put(file4.getName());
-            	 reqEntity.addPart("uploadedfile1", bin1);
-            	 reqEntity.addPart("uploadedfile2", bin2);
-            	 reqEntity.addPart("uploadedfile3", bin3);
-            	 reqEntity.addPart("uploadedfile4", bin4);
-             }
-             
-             reqEntity.addPart("user", new StringBody("User"));
-             post.setEntity(reqEntity);
-             
-             HttpResponse response = client.execute(post);
-             resEntity = response.getEntity();
-             @SuppressWarnings("unused")
-			final String response_str = EntityUtils.toString(resEntity);
-        } catch (Exception ex) {
-        	countImage=0;
-            Log.e("Debug", "error: " + ex.getMessage(), ex);
-        }
-    	return resEntity;
-    }
+
+	private class Upload extends AsyncTask<String, Void, String> {
+		private Cloudinary mCloudinary;
+		private File mFile;
+		private int mPosition;
+
+		public Upload(Cloudinary cloudinary, File file, int position) {
+			super();
+			mCloudinary = cloudinary;
+			mFile       = file;
+			mPosition   = position;
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			JSONObject result = null;
+			try {
+				result = new JSONObject(mCloudinary.uploader().upload(mFile, ObjectUtils.asMap("transformation",
+						new Transformation().width(850).height(850).crop("limit"))));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return result.toString();
+		}
+
+		@Override
+		protected void onPostExecute(String strResult) {
+			try {
+				JSONObject jsonObject = new JSONObject(strResult);
+				String strFileName    = jsonObject.getString("url").substring(jsonObject.getString("url").lastIndexOf('/') + 1);
+				jsonArray.put(strFileName);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			if (mPosition==(arrayListFile.size()-1)) {
+				countImage=0;
+				new addNewItem().execute();
+			}
+		}
+	}
+
+	public void addFileToArrayList(String strPath, int intPosition) {
+		if (arrayListFile.size()==0) {
+			arrayListFile.add(new File(strPath));
+		} else {
+			try {
+				if (arrayListFile.get(intPosition) != null) {
+					arrayListFile.add(new File(strPath));
+				} else {
+					arrayListFile.set(intPosition, new File(strPath));
+				}
+			} catch (IndexOutOfBoundsException e) {
+				arrayListFile.add(new File(strPath));
+			}
+		}
+	}
+
+	private void showDialog() {
+		dialog = new Dialog(ShopAddActivity.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.custom_dialog);
+		dialog.setCancelable(false);
+
+		TextView lblTitle = (TextView) dialog.findViewById(R.id.lblTitle);
+		lblTitle.setTypeface(fontUbuntuL);
+
+		try {
+			dialog.show();
+		} catch (Exception e) {}
+	}
 
 	public void downloadFile(String fileUrl, int i) {
 		URL myFileUrl = null;

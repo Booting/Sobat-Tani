@@ -2,11 +2,11 @@ package com.sobattani;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -43,6 +43,7 @@ public class ShopActivity extends ActionBarActivity {
 	private SharedPreferences sobatTaniPref;
 	private JSONArray str_login  = null;
 	private Toolbar toolbar;
+	private SwipeRefreshLayout swipe;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -64,12 +65,29 @@ public class ShopActivity extends ActionBarActivity {
 		UserId        = sobatTaniPref.getString("UserId", "");
 		itemList      = (StaggeredGridView) findViewById(R.id.itemList);
 		btnSell		  = (ImageView) findViewById(R.id.btnSell);
+		swipe		  = (SwipeRefreshLayout) findViewById(R.id.swipe);
 
 		btnSell.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				startActivityForResult(new Intent(getApplicationContext(), ShopRulesActivity.class), 1);
+			}
+		});
+
+		swipe.setSize(SwipeRefreshLayout.DEFAULT);
+		swipe.setColorSchemeResources(
+				android.R.color.holo_blue_bright,
+				android.R.color.holo_orange_light,
+				android.R.color.holo_green_light,
+				android.R.color.holo_red_light
+		);
+
+		swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				shopAdapter = null;
+				getUserDetail();
 			}
 		});
 
@@ -95,17 +113,18 @@ public class ShopActivity extends ActionBarActivity {
 	}
 
 	public void getUserDetail() {
-		final ProgressDialog dialog;
-		dialog = new ProgressDialog(ShopActivity.this);
-		dialog.setMessage("Mohon Menunggu...");
-		dialog.show();
-		dialog.setCancelable(true);
+		progressBar.setVisibility(View.VISIBLE);
+		swipe.setVisibility(View.GONE);
 
 		String url = Referensi.url+"/getUserDetail.php?UserId="+UserId;
 		JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
+					if (swipe.isRefreshing()) {
+						swipe.setRefreshing(false);
+					}
+
 					str_login  = response.getJSONArray("info");
 					for (int i = 0; i < str_login.length(); i++){
 						JSONObject ar = str_login.getJSONObject(i);
@@ -125,12 +144,10 @@ public class ShopActivity extends ActionBarActivity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				dialog.dismiss();
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
-				dialog.dismiss();
 				Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -139,9 +156,6 @@ public class ShopActivity extends ActionBarActivity {
 
 	@SuppressLint("NewApi")
 	public void getAllData() {
-		progressBar.setVisibility(View.VISIBLE);
-		itemList.setVisibility(View.GONE);
-		
         String url;
 		if (UserType.equalsIgnoreCase("1")) {
 			url = Referensi.url + "/getAllItemsPetani.php";
@@ -153,7 +167,7 @@ public class ShopActivity extends ActionBarActivity {
             @Override
             public void onResponse(JSONArray response) {
             	progressBar.setVisibility(View.GONE);
-            	itemList.setVisibility(View.VISIBLE);
+				swipe.setVisibility(View.VISIBLE);
         		
             	shopAdapter = new ShopAdapter(ShopActivity.this, response, UserType);
 				itemList.setAdapter(shopAdapter);

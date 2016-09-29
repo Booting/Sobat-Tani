@@ -15,18 +15,23 @@
 		android:theme="@style/ToolBar"
 		app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-	<com.etsy.android.grid.StaggeredGridView
-		android:id="@+id/itemList"
+	<android.support.v4.widget.SwipeRefreshLayout
+		android:id="@+id/swipe"
 		android:layout_below="@+id/toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:animateLayoutChanges="true"
-		android:smoothScrollbar="true"
-		android:scrollingCache="false"
-		android:animationCache="false"
-		app:column_count="2"
-		app:item_margin="10dp"
-		android:visibility="gone" />
+		android:visibility="gone">
+		<com.etsy.android.grid.StaggeredGridView
+			android:id="@+id/itemList"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:animateLayoutChanges="true"
+			android:smoothScrollbar="true"
+			android:scrollingCache="false"
+			android:animationCache="false"
+			app:column_count="2"
+			app:item_margin="10dp" />
+	</android.support.v4.widget.SwipeRefreshLayout>
 
 	<ImageView android:id="@+id/btnSell"
 		android:layout_width="60dp"

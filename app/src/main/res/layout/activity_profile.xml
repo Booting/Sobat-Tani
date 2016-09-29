@@ -75,21 +75,29 @@
                 android:orientation="horizontal"
                 android:layout_weight="4"
                 android:layout_marginTop="5dp">
-                <ImageView android:id="@+id/imageOne"
-                    android:layout_marginRight="4dp"
-                    android:onClick="imageOneClick"
-                    style="@style/ProfileImageViewFotoSobat"/>
-                <ImageView android:id="@+id/imageTwo"
-                    android:layout_marginRight="4dp"
-                    android:onClick="imageTwoClick"
-                    style="@style/ProfileImageViewFotoSobat" />
-                <ImageView android:id="@+id/imageThree"
-                    android:layout_marginRight="4dp"
-                    android:onClick="imageThreeClick"
-                    style="@style/ProfileImageViewFotoSobat" />
-                <ImageView android:id="@+id/imageFour"
-                    android:onClick="imageFourClick"
-                    style="@style/ProfileImageViewFotoSobat" />
+                <LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+                    android:layout_marginRight="4dp">
+                    <ImageView android:id="@+id/imageOne"
+                        android:onClick="imageOneClick"
+                        style="@style/ProfileImageViewFotoSobat"/>
+                </LinearLayout>
+                <LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+                    android:layout_marginRight="4dp">
+                    <ImageView android:id="@+id/imageTwo"
+                        android:onClick="imageTwoClick"
+                        style="@style/ProfileImageViewFotoSobat" />
+                </LinearLayout>
+                <LinearLayout style="@style/ProfileLinearLayoutFotoSobat"
+                    android:layout_marginRight="4dp">
+                    <ImageView android:id="@+id/imageThree"
+                        android:onClick="imageThreeClick"
+                        style="@style/ProfileImageViewFotoSobat" />
+                </LinearLayout>
+                <LinearLayout style="@style/ProfileLinearLayoutFotoSobat">
+                    <ImageView android:id="@+id/imageFour"
+                        android:onClick="imageFourClick"
+                        style="@style/ProfileImageViewFotoSobat" />
+                </LinearLayout>
             </LinearLayout>
 
             // NAMA

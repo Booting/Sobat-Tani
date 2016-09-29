@@ -224,7 +224,7 @@ public class ShopDetailActivity extends AppCompatActivity {
         public Object instantiateItem(ViewGroup container, final int position) {
             ImageView imageView = new ImageView(ShopDetailActivity.this);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);        
-            Glide.with(ShopDetailActivity.this).load(Referensi.url + "/pictures/" + jsonProductImages.optString(position))
+            Glide.with(ShopDetailActivity.this).load(Referensi.URL_CLOUDINARY + jsonProductImages.optString(position))
 					.placeholder(R.drawable.img_loader).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL).override(300, 300)
 					.dontAnimate().into(imageView);
 
